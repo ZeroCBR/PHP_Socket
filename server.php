@@ -16,23 +16,23 @@
 		}
 
 		function server_up(){
-	                if(($socket = socket_create(AF_INET, SOCK_STREAM,0))<0){
-	                        echo "Error in creating socket => ".socket_strerror($socket);
+	                if(($this->socket = socket_create(AF_INET, SOCK_STREAM,0))<0){
+	                        echo "Error in creating socket => ".socket_strerror($this->socket);
 	                        exit();
 	                }
-	                if(($fed = socket_bind($socket, $host, $port))<0){
-	                        echo "Error in binding socket => ".socket_strerror($socket);
+	                if(($fed = socket_bind($this->socket, $this->host, $this->port))<0){
+	                        echo "Error in binding socket => ".socket_strerror($this->socket);
 	                        exit();
 	                }
-	                if(($fed = socket_listen($socket, 9))<0){
-	                        echo "Error in listenning socket => ".socket_strerror($socket);
+	                if(($fed = socket_listen($this->socket, 9))<0){
+	                        echo "Error in listenning socket => ".socket_strerror($this->socket);
 	                        exit();
 	                }
-	                socket_set_nonblock($socket);
-	                while($_LISTEN){
-	                        $conn = @socket_accept($socket);
+	                socket_set_nonblock($this->socket);
+	                while($this->_LISTEN){
+	                        $conn = @socket_accept($this->socket);
 	                        if(!$conn){
-	                                usleep(200);
+	                                usleep(500);
 	                        }
 	                        else if($conn > 0){
 	                                socket_write($conn,"Hello World !");
@@ -44,7 +44,7 @@
         	                }
 	                }
                 	socket_close($conn);
-                	socket_close($socket);
+                	socket_close($this->socket);
         	}
 		
 		function server_down(){

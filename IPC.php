@@ -1,14 +1,14 @@
 <?php
 	class IPC_CONN implements SplSubject{
-i		private IPC_KEY;
-		public $IPCname;
-		public $observer;
-		public $mess;
-	
+		private $IPC_KEY;
+		private $IPCname;
+		private $observer;
+		private $mess;
+		private $_LISTEN;
 		function __construct(){
 			$this->IPCname = "IPC Robot";
-			$this->IPC_KEY ="/home/john/temp/Key";
-			$this->observers = array();
+			$this->IPC_KEY =ftok("/home/john/temp/Key",'a');
+			$this->_LISTEN = true;
 			print_r("[IPC INITIALIZED]\n");
 		}
 		
@@ -22,22 +22,36 @@ i		private IPC_KEY;
 			}
 		}
 		
-		public notify(){
-			$this->observer - >update($this);
+		public function notify(){
+			$this->observer->update($this);
 		}
 
-		public set_mess($mess){
+		public function set_mess($mess){
 			$this->mess = $mess;
 		} 
 
-		public get_mess(){
+		public function get_mess(){
 			return $this->mess;
 		}
 
-		public get_name(){
+		public function get_name(){
 			return $this->name;
 		}
 		
+		public function listen_IPC(){
+			$this->mess = "";
+			$message_queue = msg_get_queue($this->IPC_KEY, 0666);
+			var_dump($message_queue);
+			while($this->_LISTEN){
+				@msg_receive($message_queue,0,$msg_type,1024,$this->mess,true,MSG_IPC_NOWAIT);
+				if(!empty($this->mess)){
+					$this->notify();
+					$this->_LISTEN = false;
+				}
+				usleep(500);
+			}	
+
+		}		
 
 	}
 ?>
