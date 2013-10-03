@@ -7,7 +7,7 @@
 		private $_LISTEN;
 		function __construct(){
 			$this->IPCname = "IPC Robot";
-			$this->IPC_KEY =ftok("/home/john/temp/Key",'a');
+			$this->IPC_KEY =ftok("/home/john/temp/key",'a');
 			$this->_LISTEN = true;
 			print_r("[IPC INITIALIZED]\n");
 		}

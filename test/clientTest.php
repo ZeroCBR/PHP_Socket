@@ -5,12 +5,13 @@ $connection = socket_connect($socket, '127.0.0.1', 10008);    //连接服务器�
   
 while ($buffer = @socket_read($socket, 1024, PHP_NORMAL_READ)) {  
     //服务端告诉客户端，自己的状态  
+    echo "Buffer Data: " . var_dump($buffer) . "\n";
     if (preg_match("/not connect/",$buffer)) {  
         echo "don`t connect\n";  
         break;  
     } else {  
         //服务器传来信息  
-        echo "Buffer Data: " . $buffer . "\n";  
+        echo "Buffer Data: " . var_dump($buffer) . "\n";  
   
         echo "Writing to Socket\n";  
         // 将客户的信息写到通道中，传给服务器端  

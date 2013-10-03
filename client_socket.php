@@ -9,7 +9,7 @@
 	
 		function __construct($conn){
 			$login = false;	
-			$this->conn = $conn
+			$this->conn = $conn;
 		}
 		
 		function login($mail,$pass){

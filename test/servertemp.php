@@ -3,6 +3,8 @@
 **   This part is the defination of variable
 **
 **/
+	$mess = array('name'=>'john',  'number'=>'123456');
+	$package = json_encode($mess);
 	$_LISTEN = true;
 	set_time_limit(0);
 	$host = "localhost";
@@ -32,6 +34,7 @@
 	//Start listening and accept the connections
 	function server_start($host, $port){
 		GLOBAL $_LISTEN;
+		GLOBAL $package;
 		$str = "I receive your message ";
 		if(($socket = socket_create(AF_INET, SOCK_STREAM,0))<0){
 			echo "Error in creating socket =>".socket_strerror($socket);
@@ -53,7 +56,7 @@
 				usleep(200);	
 			}
 			else if($conn > 0){
-				socket_write($conn,$str, strlen($str));
+				socket_write($conn,$package, strlen($package));
 				$_LISTEN = false;
 			}	
 			else {

@@ -12,7 +12,7 @@
 		$IPC = new IPC_CONN();
 		$IPC -> attach($server);
 		$IPC -> listen_IPC();
-		print_r("IPC start up\n");
+		print_r("IPC START UP\n");
 	        	
 	}
         else {
