@@ -1,10 +1,8 @@
 <?php
 	class c_socket {
-	
-		private $mail;		//user email
+		private $user_info;	
 		private $login;		//True if the user login
 		private $c_id;		//client socket id
-		private $passwrod;
 		private $conn;
 	
 		function __construct($conn){
@@ -12,9 +10,8 @@
 			$this->conn = $conn;
 		}
 		
-		function login($mail,$pass){
-			$this->mail = $mail;
-			$this->pass = $pass;
+		function login(){
+			return false;
 		}
 
 		function get_id(){
@@ -34,6 +31,13 @@
 			else{
 				echo 'Running !';
 			}
+		}
+	
+		function client_authorize($packing){
+                        $this->user_info = unpacking_login($packing);
+                	if(!$this->login()){
+				return false;
+			}	
 		}
 			
 		function destroy(){

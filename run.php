@@ -4,7 +4,6 @@
 	$port = "10008";
 	$host ="localhost";
 	$pid = pcntl_fork();
-	$server = new Server($host,$port);
 	if($pid == -1){
 		print_r("ERROR => Failed in Forking\n");
 	}
@@ -16,6 +15,7 @@
 	        	
 	}
         else {
+	        $server = new Server($host,$port);
                 $server->server_up();
                 print_r("SERVER DOWN\n");
         }

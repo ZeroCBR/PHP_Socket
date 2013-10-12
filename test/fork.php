@@ -6,14 +6,18 @@ if($pid == -1 ){
 	print_r("Can not fork\n");
 }
 else if($pid){
-	for($i=0;$i<10;$i++){
-	 	print_r("Main Thread Counter $i \n");
-		sleep(1);
-	}
-	pcntl_wait($status);
+	echo "Parent exit\n";
 }
 else{
-	system("php counter.php $mess"); 
+	echo $pid;
+	$counter =0;
+	while($counter<10){
+		$counter ++;
+		echo $counter."\n";
+		sleep(1);
+	}
+	echo "Child exit\n";
+	
 }
 
 ?>

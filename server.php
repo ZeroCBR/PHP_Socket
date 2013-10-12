@@ -1,14 +1,19 @@
 <?php
+	include_once"package_helper.php";
+	include_once"client_socket.php";
+
 	class Server implements SplObserver{
 		private $host;
 		private $port;
 		private $socket;
 		private $_LISTEN;
-		
+		private $clients;
 		function __construct($host,$port){
 			$this->host = $host;
 			$this->port = $port;
 			$this->_LISTEN = true;
+			$this->clients = array();
+			pcntl_signal(SIGCHLD,SIG_IGN);
 		}
 
 		function update(SplSubject $subject){
@@ -35,21 +40,39 @@
 	                                usleep(500);
 	                        }
 	                        else if($conn > 0){
-	                                socket_write($conn,"Hello World !");
-					$this->server_down();
-	                        }
+	                        	$this->process_client($conn);
+				}
 	                        else {
      	                 	        echo "Error in connecting => ".socket_strerror($conn);
        	         	                die;
         	                }
 	                }
-                	socket_close($conn);
                 	socket_close($this->socket);
         	}
 		
 		function server_down(){
 			$this->_LISTEN = false;
 		}
+		
+		function process_client($conn){
+			$pid = pcntl_fork();	
+			if($pid == -1){
+				echo "Fork Error!\n";
+			}
+			else if($pid == 0){
+				socket_recv($conn,$mess,1024,MSG_DONTWAIT);
+				$client = new c_socket($conn);
+				if($client -> client_authorize($mess)){
+					
+				}
+				else{
+					socket_write($conn,"Login Failed",1024);
+					echo "Socket write\n";
+					socket_close($conn);
+					echo "Socket Close\n";
+				}
+			}
+		}		
 
 	}
 
