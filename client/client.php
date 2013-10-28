@@ -34,7 +34,7 @@
 				unset($this->user_info);
 				fwrite(STDOUT,"Email: ");
 				$this->user_info = array('email'=>trim(fgets(STDIN)));
-				fwrite(STDOUT,"Password(More Than 7 Number): ");
+				fwrite(STDOUT,"Password(More Than 5 Number): ");
   				$this->user_info += array('password'=>trim(fgets(STDIN)));
 				$pass = $this->checkout_user_info($this->user_info);
 			}
@@ -44,7 +44,7 @@
 			if(!isset($info))
 				return false;
 			else if(preg_match("/^[0-9a-zA-Z]+@(([0-9a-zA-Z]+)[.])+[a-z]{2,4}$/i",$info['email'])){
-				if(strlen($info['password'])>=7){
+				if(strlen($info['password'])>=6){
 					return true;
 				}
 				email_error();

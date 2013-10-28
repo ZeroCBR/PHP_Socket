@@ -65,7 +65,8 @@
 				socket_recv($conn,$mess,1024,MSG_DONTWAIT);
 				$client = new c_socket($conn, $this->database);
 				if($client -> client_authorize($mess)){
-					
+					socket_write($conn,"succeed",1024);
+					echo "One Client Login\n";		
 				}
 				else{
 					socket_write($conn,"Login Failed",1024);

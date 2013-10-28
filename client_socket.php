@@ -15,7 +15,7 @@
 		function login(){
 			$query = $this->db -> where("users",array("email"=>$this->user_info['email']));
 			if($query){
-				$pass =md5(md5($user_info['password'].$query['salt']));
+				$pass = md5(md5($this->user_info['password']).$query['salt']);
 				if($pass === $query['hashed_password']){
 					return true;
 				}
