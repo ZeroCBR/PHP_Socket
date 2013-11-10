@@ -27,7 +27,7 @@
                                         'token' => $arr[1],
                                         'param' => $arr[2],
                                         'task_id' => $arr[3],
-                                        'deadline' => $arr[4]
+                                        'time' => $arr[4]
                                         );
                         }
                         return $mess;
