@@ -23,11 +23,12 @@
                         if(isset($packing)){
                                 $arr = explode(', ',$packing);
                                 $mess = array(
-                                        'c_id' => $arr[0],
-                                        'token' => $arr[1],
-                                        'param' => $arr[2],
-                                        'task_id' => $arr[3],
-                                        'time' => $arr[4]
+                                        'title' => $arr[0],
+                                        'annotation' => $arr[1],
+                                        'params' => $arr[2],
+                                        'machine_id' => $arr[3],
+                                        'deadline' => $arr[4],
+					'uid'=>$arr[5]
                                         );
                         }
                         return $mess;

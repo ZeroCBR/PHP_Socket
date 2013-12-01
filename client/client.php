@@ -11,16 +11,18 @@
 		function __construct(){
 			$this->login_flag = false;
 			$this->conn();
-			set_time_limit (0);
+		 	set_time_limit (0);
 		}
 		
 		function login(){
 			$packing = packing($this->user_info);
 			socket_write($this->socket,$packing,1024);
-			socket_recv($this->socket,$this->mess,1024,MSG_WAITALL);
-			if($this->mess === "succeed"){
+			$this->mess=socket_read($this->socket,1024);
+			echo $this->mess;
+			if($this->mess === "succeed\n"){
 				$this->login_flag = true;
 				login_successfully();
+				$this->listen();
 			}
 			else{
 				login_failed();
@@ -53,11 +55,19 @@
 			password_error();
 			return false;	
 		}	
-	
+		
+		function listen(){
+			while(1){
+				while (($data = @socket_read($this->socket,1024))) {  
+            				print_r("Message From Server: ".$data."\n");
+				} 
+			}
+		}		
+
 		function conn(){
 			$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 			$this->get_user_info();
-			if(@socket_connect($this->socket, '127.0.0.1', 10008)){
+			if(@socket_connect($this->socket, '192.168.1.107', 10008)){
 				conn_successfully();
 				$this->login();
 			} 
@@ -69,5 +79,4 @@
 	}
 		
 	$client = new client();
-
 ?>
