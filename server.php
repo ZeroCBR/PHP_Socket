@@ -18,7 +18,7 @@
 			$this->port = $port;
 			$this->_LISTEN = true;
 			$this->clients = array();
-			$this->IPC_KEY =ftok("/home/john/temp/key",'a');
+			$this->IPC_KEY =ftok("/home/cbr/temp/key",'a');
 			$this->database = new DB_access();
   		  	$this->IPC_mess= "";
 			$this->message_queue = msg_get_queue($this->IPC_KEY, 0666);

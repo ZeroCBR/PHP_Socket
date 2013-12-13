@@ -2,10 +2,10 @@
 	if(!function_exists("packing")){
 		function packing($arr){
 			$mess = "";
-                        if(count($mess)>0){
-                                $mess = implode(", ",$arr);
-                        }
-                        return $mess;
+			if(count($mess)>0){
+				$mess = implode(", ",$arr);
+			}
+			return $mess;
 		}
 	}
 
@@ -23,10 +23,12 @@
                         if(isset($packing)){
                                 $arr = explode(', ',$packing);
                                 $mess = array(
-                                        'task_name' => $arr[0],
-					'machine_name=>'=>$arr[1],
-					'param' => $arr[2],
-                                        'time' => $arr[3]
+                                        'title' => $arr[0],
+                                        'annotation' => $arr[1],
+                                        'params' => $arr[2],
+                                        'machine_id' => $arr[3],
+                                        'deadline' => $arr[4],
+					'uid'=>$arr[5]
                                         );
                         }
                         return $mess;

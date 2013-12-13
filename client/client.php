@@ -1,12 +1,56 @@
 <?php 
 	include_once("package_helper.php");
 	include_once("noti_helper.php");
+
+	class machineTask{
+		private $title;
+		private $annotation;
+		private $parameter;
+		private $machine_id;
+		private $runtime;
+		private $user_id;
+
+		function __construct($title,$annotation,$parameter,$machine_id,$runtime,$user_id){
+			$this->title= $title;
+			$this->annotation= $annotation;
+			$this->parameter= $parameter;
+			$this->machine_id= $machine_id;
+			$this->runtime= $runtime;
+			$this->user_id= $user_id;
+		}
+
+		function getTitle(){
+			return $this->title;
+		}
+
+		function getAnnotation(){
+			return $this->annotation;
+		}
+
+		function getParameter(){
+			return $this->parameter;
+		}
+
+		function getMachine_id(){
+			return $this->machine_id;
+		}
+
+		function getRuntime(){
+			return $this->runtime;
+		}
+
+		function getUser_id(){
+			return $this->user_id;
+		}		
+	}
+	
 	class client {
 
 		private $socket;
 		private $user_info;
 		private $mess;
 		private $login_flag;
+		private $machineTaskList;
 
 		function __construct(){
 			$this->login_flag = false;
@@ -55,11 +99,35 @@
 			password_error();
 			return false;	
 		}	
+
+		function splitData($data){
+			$str=explode(",",$data);
+			$task = new machineTask($str[0],$str[1],$str[2],$str[3],$str[4],$str[5]);
+			return $task;
+		}
 		
 		function listen(){
+			$machineTaskList=array();
+			socket_set_nonblock($this->socket);				
+			print_r(date("Y-m-d H:i"));
 			while(1){
-				while (($data = @socket_read($this->socket,1024))) {  
+				$time=date(" Y-m-d H:i");
+				if($machineTaskList!=null){						
+					for($i=0;$i<count($machineTaskList);$i++){
+						if( strcmp ( $machineTaskList[$i]->getRuntime(), $time )==0){
+							unset($machineTaskList[$i]);
+							print_r($machineTaskList);
+							//system('python PATH_OF_FILE');
+							break;
+						}
+					}
+				}
+
+				if (($data = @socket_read($this->socket,1024))) {
             				print_r("Message From Server: ".$data."\n");
+					$task=$this->splitData($data);
+					array_push($machineTaskList, $task);
+					print_r($machineTaskList);
 				} 
 			}
 		}		
@@ -67,7 +135,7 @@
 		function conn(){
 			$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 			$this->get_user_info();
-			if(@socket_connect($this->socket, '192.168.1.107', 10008)){
+			if(@socket_connect($this->socket, 'localhost', 10008)){
 				conn_successfully();
 				$this->login();
 			} 
@@ -75,7 +143,6 @@
 				socket_close($this->socket);
 			}
 		}
-
 	}
 		
 	$client = new client();

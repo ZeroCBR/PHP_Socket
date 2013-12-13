@@ -2,7 +2,7 @@
 	class DB_access{
 		private $DB_conn;
 		function __construct(){
-			$this->DB_conn = mysql_connect("localhost","root","");
+			$this->DB_conn = mysql_connect("localhost","root","12345");
 			if(!$this->DB_conn){
 				die("DB Connect Failed:".mysql_error());	
 			}
