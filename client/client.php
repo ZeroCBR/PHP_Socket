@@ -108,16 +108,31 @@
 		
 		function listen(){
 			$machineTaskList=array();
+			$mac=null;
 			socket_set_nonblock($this->socket);				
 			print_r(date("Y-m-d H:i"));
 			while(1){
 				$time=date(" Y-m-d H:i");
 				if($machineTaskList!=null){						
 					for($i=0;$i<count($machineTaskList);$i++){
-						if( strcmp ( $machineTaskList[$i]->getRuntime(), $time )==0){
+						if( strcmp ( $machineTaskList[$i]->getRuntime(), $time )==0){				
+							$doc = new DOMDocument();
+							$doc->load( 'mac_table.xml' );
+							$items = $doc->getElementsByTagName( "item" );
+							foreach( $items as $item )
+							{
+								if(strcmp($item->getElementsByTagName("machine_id")->item(0)->nodeValue,$machineTaskList[$i]->getMachine_id())==0){
+									$mac=$item->getElementsByTagName("mac")->item(0)->nodeValue;
+									break;
+								}
+								else{
+									$mac="00:13:04:10:09:72";
+								}
+							}
 							unset($machineTaskList[$i]);
-							print_r($machineTaskList);
-							//system('python PATH_OF_FILE');
+							print_r($machineTaskList);													
+							print_r($mac);
+							//system('python PATH_OF_FILE, MAC');
 							break;
 						}
 					}
