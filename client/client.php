@@ -132,7 +132,7 @@
 							unset($machineTaskList[$i]);
 							print_r($machineTaskList);													
 							print_r($mac);
-							//system('python PATH_OF_FILE, MAC');
+							system('python arduino.py '.$mac);
 							break;
 						}
 					}
