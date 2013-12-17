@@ -1,0 +1,22 @@
+<table>
+	<item>
+		<machine_id>1</machine_id>
+		<mac>00:13:04:10:09:72</mac>
+	</item>
+	<item>
+		<machine_id>2</machine_id>
+		<mac>00:13:04:10:09:72</mac>
+	</item>
+	<item>
+		<machine_id>3</machine_id>
+		<mac>00:13:04:10:09:72</mac>
+	</item>
+	<item>
+		<machine_id>4</machine_id>
+		<mac>00:13:04:10:09:72</mac>
+	</item>
+	<item>
+		<machine_id>5</machine_id>
+		<mac>00:13:04:10:09:72</mac>
+	</item>
+</table>

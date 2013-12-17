@@ -110,9 +110,9 @@
 			$machineTaskList=array();
 			$mac=null;
 			socket_set_nonblock($this->socket);				
-			print_r(date("Y-m-d H:i"));
+			print_r(date("Y-m-d H:i:s"));
 			while(1){
-				$time=date(" Y-m-d H:i");
+				$time=date(" Y-m-d H:i:s");
 				if($machineTaskList!=null){						
 					for($i=0;$i<count($machineTaskList);$i++){
 						if( strcmp ( $machineTaskList[$i]->getRuntime(), $time )==0){				
