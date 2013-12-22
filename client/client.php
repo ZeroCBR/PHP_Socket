@@ -113,8 +113,19 @@
 			print_r(date("Y-m-d H:i:s"));
 			while(1){
 				$time=date(" Y-m-d H:i:s");
-				if($machineTaskList!=null){						
+				
+				if (($data = @socket_read($this->socket,1024))) {
+            				print_r("Message From Server: ".$data."\n");
+					$task=$this->splitData($data);
+					array_push($machineTaskList, $task);
+					print_r($machineTaskList);
+				} 
+
+				if(count($machineTaskList)>0){						
 					for($i=0;$i<count($machineTaskList);$i++){
+						if($machineTaskList[$i]==NULL){
+							continue;
+						}
 						if( strcmp ( $machineTaskList[$i]->getRuntime(), $time )==0){				
 							$doc = new DOMDocument();
 							$doc->load( 'mac_table.xml' );
@@ -137,13 +148,6 @@
 						}
 					}
 				}
-
-				if (($data = @socket_read($this->socket,1024))) {
-            				print_r("Message From Server: ".$data."\n");
-					$task=$this->splitData($data);
-					array_push($machineTaskList, $task);
-					print_r($machineTaskList);
-				} 
 			}
 		}		
 
