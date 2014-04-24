@@ -111,9 +111,7 @@
 			$mac=null;
 			socket_set_nonblock($this->socket);				
 			print_r(date("Y-m-d H:i:s"));
-			while(1){
-				$time=date(" Y-m-d H:i:s");
-				
+			while(1){				
 				if (($data = @socket_read($this->socket,1024))) {
             				print_r("Message From Server: ".$data."\n");
 					$task=$this->splitData($data);
@@ -123,10 +121,13 @@
 
 				if(count($machineTaskList)>0){						
 					for($i=0;$i<count($machineTaskList);$i++){
+						$time=date(" Y-m-d H:i:s");
+						$time=strtotime($time);
+						$runtime=strtotime($machineTaskList[$i]->getRuntime());
 						if($machineTaskList[$i]==NULL){
 							continue;
 						}
-						if( strcmp ( $machineTaskList[$i]->getRuntime(), $time )==0){				
+						if($runtime==$time){				
 							$doc = new DOMDocument();
 							$doc->load( 'mac_table.xml' );
 							$items = $doc->getElementsByTagName( "item" );
