@@ -1,5 +1,6 @@
 <?php
 	include_once"DB_access.php";
+	include_once"machineTask.php";
 	class c_socket{
 		private $user_info;	
 		private $login;		//True if the user login
@@ -49,5 +50,17 @@
 			return true;
 		}
 
+		function splitData($data){
+			$str=explode(",",$data);
+			$task = new machineTask($str[0],$str[1],$str[2],$str[3],$str[4],$str[5],$str[6]);
+			return $task;
+		}
+
+		function changeStatus($task){
+			if($task){
+				$task->setStatus();			
+				mysql_query("UPDATE tasks SET status = 'done' WHERE id = ".$task->getTask_id());			
+			}
+		}
 	}
 ?>

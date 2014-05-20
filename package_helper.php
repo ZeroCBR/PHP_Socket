@@ -28,7 +28,8 @@
                                         'params' => $arr[2],
                                         'machine_id' => $arr[3],
                                         'deadline' => $arr[4],
-					'uid'=>$arr[5]
+					'id'=>$arr[5],
+					'uid'=>$arr[6]
                                         );
                         }
                         return $mess;

@@ -2,6 +2,7 @@
 	include_once"package_helper.php";
 	include_once"client_socket.php";
 	include_once"DB_access.php";
+
 	class Server {
 		private $host;
 		private $IPC_KEY;
@@ -12,6 +13,8 @@
 		private $_LISTEN;
 		private $database;
 		private $message_queue;
+		private $machineTaskList=array();
+		private $cs;
 
 		function __construct($host,$port){
 			$this->host = $host;
@@ -29,7 +32,10 @@
 			$package = mess_unpacking($this->IPC_mess);
 			foreach($this->clients as $client){
                                 if($client->get_id() == $package["uid"]){
+					     $this->cs=$client;
                                         $client->send_mess($this->IPC_mess);
+					     $task=$client->splitData($this->IPC_mess);
+	   				     array_push($this->machineTaskList, $task);
                                 }
                         }
 		}		
@@ -57,6 +63,18 @@
 	                while($this->_LISTEN){
 	                        $this->IPC_process();
 				$conn = @socket_accept($this->socket);
+
+				foreach ($this->machineTaskList as $index=>$task){
+					$time=date(" Y-m-d H:i:s");
+					$time=strtotime($time);
+					$runtime=strtotime($task->getRuntime());
+					if($runtime==$time){	
+						$this->cs->changeStatus($task);
+						print_r("Task id: ".$task->getTask_id()." finish on ".$task->getRuntime()."\n");
+						unset($this->machineTaskList[$index]);
+						break;
+					}
+				}
 	                        if(!$conn){
 	                                usleep(500);
 	                        }

@@ -8,14 +8,16 @@
 		private $parameter;
 		private $machine_id;
 		private $runtime;
+		private $task_id;
 		private $user_id;
 
-		function __construct($title,$annotation,$parameter,$machine_id,$runtime,$user_id){
+		function __construct($title,$annotation,$parameter,$machine_id,$runtime,$task_id,$user_id){
 			$this->title= $title;
 			$this->annotation= $annotation;
 			$this->parameter= $parameter;
 			$this->machine_id= $machine_id;
 			$this->runtime= $runtime;
+			$this->task_id= $task_id;
 			$this->user_id= $user_id;
 		}
 
@@ -39,6 +41,10 @@
 			return $this->runtime;
 		}
 
+		function getTask_id(){
+			return $this->task_id;
+		}	
+
 		function getUser_id(){
 			return $this->user_id;
 		}		
@@ -50,7 +56,7 @@
 		private $user_info;
 		private $mess;
 		private $login_flag;
-		private $machineTaskList;
+		private $machineTaskList=array();
 
 		function __construct(){
 			$this->login_flag = false;
@@ -102,51 +108,56 @@
 
 		function splitData($data){
 			$str=explode(",",$data);
-			$task = new machineTask($str[0],$str[1],$str[2],$str[3],$str[4],$str[5]);
+			$task = new machineTask($str[0],$str[1],$str[2],$str[3],$str[4],$str[5],$str[6]);
 			return $task;
+		}
+
+		
+		function send_mess($mess){
+			if($mess!=""){
+				echo"Send Message to Server: ".$mess."\n";
+				if(!socket_write($this->socket,$mess,1024)){
+					echo "Write failed\n";
+				}
+			}
 		}
 		
 		function listen(){
-			$machineTaskList=array();
 			$mac=null;
 			socket_set_nonblock($this->socket);				
 			print_r(date("Y-m-d H:i:s"));
-			while(1){				
+			while(1){			
 				if (($data = @socket_read($this->socket,1024))) {
             				print_r("Message From Server: ".$data."\n");
 					$task=$this->splitData($data);
-					array_push($machineTaskList, $task);
-					print_r($machineTaskList);
+					array_push($this->machineTaskList, $task);
+					print_r($this->machineTaskList);					
 				} 
-
-				if(count($machineTaskList)>0){						
-					for($i=0;$i<count($machineTaskList);$i++){
-						$time=date(" Y-m-d H:i:s");
-						$time=strtotime($time);
-						$runtime=strtotime($machineTaskList[$i]->getRuntime());
-						if($machineTaskList[$i]==NULL){
-							continue;
-						}
-						if($runtime==$time){				
-							$doc = new DOMDocument();
-							$doc->load( 'mac_table.xml' );
-							$items = $doc->getElementsByTagName( "item" );
-							foreach( $items as $item )
-							{
-								if(strcmp($item->getElementsByTagName("machine_id")->item(0)->nodeValue,$machineTaskList[$i]->getMachine_id())==0){
-									$mac=$item->getElementsByTagName("mac")->item(0)->nodeValue;
-									break;
-								}
-								else{
-									$mac="00:13:04:10:09:72";
-								}
+										
+				foreach ($this->machineTaskList as $index=>$task){
+					$time=date(" Y-m-d H:i:s");
+					$time=strtotime($time);
+					$runtime=strtotime($task->getRuntime());
+					if($runtime==$time){				
+						$doc = new DOMDocument();
+						$doc->load( 'mac_table.xml' );
+						$items = $doc->getElementsByTagName( "item" );
+						foreach( $items as $item )
+						{
+							if(strcmp($item->getElementsByTagName("machine_id")->item(0)->nodeValue,$task->getMachine_id())==0){
+								$mac=$item->getElementsByTagName("mac")->item(0)->nodeValue;
+								break;
 							}
-							unset($machineTaskList[$i]);
-							print_r($machineTaskList);													
-							print_r($mac);
-							system('python arduino.py '.$mac);
-							break;
+							else{
+								$mac="00:13:04:10:09:72";
+							}
 						}
+						$this->send_mess($data);
+						print_r("Task id: ".$task->getTask_id()." finish on ".$task->getRuntime()."\n");
+						unset($this->machineTaskList[$index]);
+						print_r($this->machineTaskList);													
+						system('python arduino.py '.$mac);
+						break;
 					}
 				}
 			}
