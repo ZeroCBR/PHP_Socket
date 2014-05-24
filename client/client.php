@@ -60,6 +60,7 @@
 
 		function __construct(){
 			$this->login_flag = false;
+		        date_default_timezone_set('Asia/Hong_Kong');
 			$this->conn();
 		 	set_time_limit (0);
 		}
